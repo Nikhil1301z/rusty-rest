@@ -1,3 +1,4 @@
+// Schema for the table
 table! {
     user (id) {
         id -> Uuid,

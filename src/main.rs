@@ -17,17 +17,23 @@ mod user;
 
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
+    // Initilize dot env and logger
     dotenv().ok();
     env_logger::init();
 
+    // Initialize database connection pool
     db::init();
 
+    // Initialize listenfd
     let mut listenfd = ListenFd::from_env();
+    
+    // Initialize server
     let mut server = HttpServer::new(|| 
         App::new()
             .configure(user::init_routes)
     );
 
+    // Initialize server with HOST and PORT
     server = match listenfd.take_tcp_listener(0)? {
         Some(listener) => server.listen(listener)?,
         None => {
